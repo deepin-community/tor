@@ -6,8 +6,8 @@ Build-Depends: debhelper (>= 10), quilt, libssl-dev, zlib1g-dev, libevent-dev (>
 Build-Conflicts: libnacl-dev, libseccomp-dev [!amd64 !i386]
 Standards-Version: 4.4.0
 Homepage: https://www.torproject.org/
-Vcs-Git: https://git.torproject.org/debian/tor.git
-Vcs-Browser: https://gitweb.torproject.org/debian/tor.git
+Vcs-Git: https://gitlab.torproject.org/tpo/core/debian/tor/
+Vcs-Browser: https://gitlab.torproject.org/tpo/core/debian/tor/
 
 Package: tor
 Architecture: any
