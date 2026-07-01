@@ -50,7 +50,7 @@ default:
     - rm -rf build-env
     - *apt-init
     - apt-get install sudo
-    - apt-get install build-essential
+    - apt-get install adduser build-essential
     - apt-get install $(cat debian/.debian-ci/"${CI_JOB_NAME}"/build-depends)
     - adduser --system --group --disabled-password --shell /bin/sh --home "$CI_PROJECT_DIR"/build-env "${BUILDUSER}"
   artifacts:
@@ -68,7 +68,7 @@ default:
     - rm -rf build-env binary-packages
     - *apt-init
     - apt-get install sudo
-    - apt-get install build-essential devscripts reprepro fakeroot
+    - apt-get install adduser build-essential devscripts reprepro fakeroot
   #image: ${DOCKER_ARCH}/${OS}:${SUITE}${IMAGE_EXTENSION}
   image: containers.torproject.org/tpo/tpa/base-images/${OS}:${SUITE}
   retry:
@@ -150,17 +150,13 @@ default:
 
 .matrix_full: &matrix_full
   - OS: debian
-    SUITE: [ 'sid', 'bullseye', 'bookworm', 'trixie' ]
+    SUITE: [ 'sid', 'bookworm', 'trixie', 'forky' ]
     DOCKER_ARCH: amd64
     HOSTING_PROVIDER_TAG: tpa
   - OS: debian
-    SUITE: [ 'sid', 'bullseye', 'bookworm', 'trixie' ]
+    SUITE: [ 'sid', 'bookworm', 'trixie', 'forky' ]
     DOCKER_ARCH: arm64
     HOSTING_PROVIDER_TAG: osuosl
-  - OS: debian
-    SUITE: 'bullseye'
-    DOCKER_ARCH: amd64
-    HOSTING_PROVIDER_TAG: tpa
   - OS: debian
     SUITE: 'bookworm'
     DOCKER_ARCH: amd64
@@ -168,11 +164,11 @@ default:
     SPECIAL: [ 'bpo12' ]
 
   - OS: ubuntu
-    SUITE: [ 'focal', 'jammy', 'noble', 'oracular' ]
+    SUITE: [ 'jammy', 'noble', 'questing', 'resolute' ]
     DOCKER_ARCH: amd64
     HOSTING_PROVIDER_TAG: tpa
   - OS: ubuntu
-    SUITE: [ 'focal', 'jammy', 'noble', 'oracular' ]
+    SUITE: [ 'jammy', 'noble', 'questing', 'resolute' ]
     DOCKER_ARCH: arm64
     HOSTING_PROVIDER_TAG: osuosl
 
@@ -291,4 +287,4 @@ collect_artifacts:
     paths:
       - binary-packages
       - source-packages
-    expire_in: 1 month
+    expire_in: 6 months
