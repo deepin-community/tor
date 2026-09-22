@@ -24,10 +24,12 @@
   /sys/devices/system/cpu/ r,
   /sys/devices/system/cpu/** r,
 
-  /etc/tor/* r,
+  /etc/tor/** r,
   /usr/share/tor/** r,
 
   /usr/bin/obfsproxy PUx,
   /usr/bin/obfs4proxy Pix,
 
   /usr/bin/snowflake-client Pix,
+
+  /usr/bin/lyrebird Pix,

@@ -37,6 +37,41 @@ set -u
 
 if [ -n "${AUTOPKGTEST_TMP:-}" ]; then
   tmpdir=""
+
+  # We are executing in Autopkgtest, check if peers can be reached at all
+  # or if blocked networks will make the test fail later
+  AUTH_DIRS_FILE="src/app/config/auth_dirs.inc"
+  if [ ! -f "$AUTH_DIRS_FILE" ]; then
+      echo "INFO: no $AUTH_DIRS_FILE - can't check if TOR is reachable to skip ($PWD)."
+  fi
+
+  TARGETS=$(grep -E -o '([0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]+' "$AUTH_DIRS_FILE" | sort -u)
+  if [ -z "$TARGETS" ]; then
+      echo "SKIP: No targets extracted from $AUTH_DIRS_FILE - can't check if TOR is reachable to skip ($PWD)."
+      exit 77
+  fi
+
+  TOR_REACHABLE=0
+  for target in $TARGETS; do
+      ip="${target%%:*}"
+      port="${target##*:}"
+
+      echo "Testing connection to Tor Directory Authority $ip:$port..."
+      if nc -z -w 3 "$ip" "$port" 2>/dev/null; then
+          echo "Successfully connected to $ip:$port"
+          TOR_REACHABLE=1
+          break
+      fi
+  done
+
+  if [ "$TOR_REACHABLE" -eq 0 ]; then
+      echo "SKIP: Unable to reach any default Tor Directory Authorities from $AUTH_DIRS_FILE."
+      exit 77
+  fi
+
+  echo "Tor network is reachable. Proceeding with tests..."
+
+  # Enter the designated temporary directory for the tests
   cd "$AUTOPKGTEST_TMP"
 else
   tmpdir="$(mktemp -d /tmp/tortest.XXXXXX)"
@@ -89,7 +124,7 @@ launchshare() {
       echo "================"
     fi
     echo "(Re-)Launching onionshare."
-    pipetty onionshare --debug data > "$ONIONSHARELOG" 2>&1 &
+    pipetty onionshare-cli --public --verbose data > "$ONIONSHARELOG" 2>&1 &
     onionsharepid="$!"
   fi
 }
@@ -105,6 +140,16 @@ EOF
 
 /usr/bin/tor -f torrc
 echo "Tor started."
+
+# Do not rely on this to be fast and working immediately or at least within the
+# "--retry 5" of curl. Instead wait until this is truly fully initialized
+# which take many minutes.
+echo "Waiting for Tor to complete bootstrapping..."
+until ( echo 'authenticate'; echo 'getinfo status/bootstrap-phase'; echo 'quit' ) | nc.openbsd -U ctl | tr -d '\r' | grep -q 'PROGRESS=100'; do
+    echo "Tor not yet fully initialized ($(date))"
+    sleep 30
+done
+echo "Tor is fully bootstrapped!"
 
 torpid="$(
   ( echo 'authenticate';
@@ -139,7 +184,7 @@ launchshare
 
 timeout=600
 while [ "$timeout" -ge 0 ]; do
-  url=$(grep '^http.*\.onion/' "$ONIONSHARELOG" || true)
+  url=$(grep --only-matching 'http.*\.onion' "$ONIONSHARELOG" || true)
   [ -n "$url" ] && break
   sleep 1
   launchshare
@@ -156,7 +201,7 @@ torsocks 2>&1 -a "$socksaddr" -P "$socksport" \
     --retry 5 \
     --max-time 300 \
     --location \
-    -o data.zip \
+    -o data.out \
     --stderr - \
     "$url/download" && rc=0 || rc=$?
 
@@ -167,9 +212,7 @@ fi
 
 echo "Comparing file."
 
-(mkdir unzip && cd unzip && unzip ../data.zip)
-
-if cmp data unzip/data; then
+if cmp data data.out; then
   echo "Successfully downloaded file."
   exit 0
 else
