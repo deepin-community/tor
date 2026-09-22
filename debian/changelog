@@ -1,3 +1,149 @@
+tor (0.4.9.12-0+deb13u2) trixie-security; urgency=medium
+
+  * Upload 0.4.9.12 to debian-security, fixing various security issues.
+    Consult the upstream changelog for details.
+
+ -- Peter Palfrader <weasel@debian.org>  Mon, 14 Sep 2026 17:40:28 +0200
+
+tor (0.4.9.12-4) unstable; urgency=medium
+
+  * Undo the fix attempt for auto package tests from 0.4.9.12-3 and
+    no longer attempt to stop any system tor service, a change introduced
+    in 0.4.9.12-1.
+
+ -- Peter Palfrader <weasel@debian.org>  Sat, 12 Sep 2026 09:14:46 +0200
+
+tor (0.4.9.12-3) unstable; urgency=medium
+
+  * Attempt to fix package tests that now want to control services by
+    adding the isolation-container restriction.  Thanks to Jérôme
+    for the help.
+
+ -- Peter Palfrader <weasel@debian.org>  Fri, 11 Sep 2026 14:33:35 +0200
+
+tor (0.4.9.12-2) unstable; urgency=medium
+
+  * Complete changelog for 0.4.9.12-1 before uploading to unstable.
+
+ -- Peter Palfrader <weasel@debian.org>  Wed, 09 Sep 2026 16:28:50 +0200
+
+tor (0.4.9.12-1) unstable; urgency=medium
+
+  [ Jérôme Charaoui ]
+  * New upstream version.
+
+  [ Christian Ehrhardt ]
+  * Stability improvements for the download-release-file and
+    setup-onion-service tests.
+
+  [ intrigeri ]
+  * AppArmor: fix communication with systemd with AppArmor 5.0.
+
+  [ Yifei Zhan ]
+  * Add lyrebird to tor.apparmor-profile.abstraction.
+
+ -- Jérôme Charaoui <jerome@riseup.net>  Tue, 08 Sep 2026 11:32:30 -0400
+
+tor (0.4.9.11-1) unstable; urgency=medium
+
+  * New upstream version.
+
+ -- Jérôme Charaoui <jerome@riseup.net>  Fri, 26 Jun 2026 10:54:15 -0400
+
+tor (0.4.9.10-1) unstable; urgency=medium
+
+  * New upstream version.
+
+ -- Jérôme Charaoui <jerome@riseup.net>  Wed, 24 Jun 2026 09:38:44 -0400
+
+tor (0.4.9.9-1) unstable; urgency=medium
+
+  * New upstream version.
+
+ -- Jérôme Charaoui <jerome@riseup.net>  Mon, 01 Jun 2026 14:00:15 -0400
+
+tor (0.4.9.8-1) unstable; urgency=medium
+
+  [ Jérôme Charaoui ]
+  * New upstream version.
+
+  [ Peter Palfrader ]
+  * Update the apparmor profile to allow tor reading everything below
+    /etc/tor/, not just at the top level.  Thanks to alexey.
+    Re: #888728.
+
+ -- Jérôme Charaoui <jerome@riseup.net>  Thu, 07 May 2026 11:23:20 -0400
+
+tor (0.4.9.7-1) unstable; urgency=medium
+
+  [ Jérôme Charaoui ]
+  * New upstream version.
+
+  [ Peter Palfrader ]
+  * Update Vcs-Git and Vcs-Browser fields.  Thanks to onders.
+    Closes: #1132669.
+
+ -- Jérôme Charaoui <jerome@riseup.net>  Wed, 06 May 2026 14:02:01 -0400
+
+tor (0.4.9.6-1) unstable; urgency=medium
+
+  * New upstream version.
+  * Drop 64b5638b backport patch
+
+ -- Jérôme Charaoui <jerome@riseup.net>  Wed, 25 Mar 2026 14:55:12 -0400
+
+tor (0.4.9.5-2) unstable; urgency=medium
+
+  * Include 64b5638b from
+    https://gitlab.torproject.org/tpo/core/tor/-/merge_requests/990
+    to fix issues on big-endian systems (closes: #1128946)
+  * tests/setup-onion-service: include onionshare -> onionshare-cli dependency
+    change from the debian-main branch, also dropping the unzip dependency.
+
+ -- Peter Palfrader <weasel@debian.org>  Thu, 26 Feb 2026 12:29:42 +0100
+
+tor (0.4.9.5-1) unstable; urgency=medium
+
+  * New upsteam tree.
+
+ -- Jérôme Charaoui <jerome@riseup.net>  Thu, 12 Feb 2026 13:11:02 -0500
+
+tor (0.4.8.22-1) unstable; urgency=medium
+
+  * New upstream version.
+
+ -- Jérôme Charaoui <jerome@riseup.net>  Wed, 28 Jan 2026 14:36:16 -0500
+
+tor (0.4.8.21-1) unstable; urgency=medium
+
+  * New upstream version.
+
+ -- Jérôme Charaoui <jerome@riseup.net>  Mon, 17 Nov 2025 15:05:05 -0500
+
+tor (0.4.8.20-1) unstable; urgency=medium
+
+  * New upstream version.
+
+ -- Jérôme Charaoui <jerome@riseup.net>  Mon, 10 Nov 2025 15:37:11 -0500
+
+tor (0.4.8.19-1) unstable; urgency=medium
+
+  * New upstream version.
+
+ -- Gabriel Filion <lelutin@torproject.org>  Thu, 09 Oct 2025 16:31:29 -0400
+
+tor (0.4.8.18-1) unstable; urgency=medium
+
+  * New upstream version.
+
+ -- Jérôme Charaoui <jerome@riseup.net>  Tue, 16 Sep 2025 13:05:13 -0400
+
+tor (0.4.8.17-1) unstable; urgency=medium
+
+  * New upstream version.
+
+ -- Gabriel Filion <lelutin@torproject.org>  Thu, 17 Jul 2025 15:37:06 -0400
+
 tor (0.4.8.16-1) unstable; urgency=medium
 
   * New upstream version.

@@ -101,7 +101,10 @@ else
   rev_release_branch="$(git rev-parse --short=16 "$upstream_release_branch")"
   if [ -z "${rev_release_branch}" ]; then echo >&2 "Could not get revision of release branch $upstream_release_branch."; exit 1; fi
 
-  git merge --no-commit "${upstream_branch}"
+  GIT_NAME="build_source/build-script script"
+  GIT_EMAIL="ci@$(hostname -f)"
+
+  git -c "user.name=${GIT_NAME}" -c "user.email=${GIT_EMAIL}" merge --no-commit "${upstream_branch}"
 
   pkgrev="${rev_release_branch}+${rev_upstream_branch}"
   distribution="${pkg}-nightly-${upstream_branch_version_number}.x"

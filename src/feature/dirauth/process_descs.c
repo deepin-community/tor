@@ -410,8 +410,8 @@ dirserv_rejects_tor_version(const char *platform,
   static const char please_upgrade_string[] =
     "Tor version is insecure or unsupported. Please upgrade!";
 
-  /* Anything before 0.4.8.0 is unsupported. Reject them. */
-  if (!tor_version_as_new_as(platform,"0.4.8.0-alpha-dev")) {
+  if (!tor_version_as_new_as(platform,
+        dirauth_get_options()->MinimalAcceptedServerVersion)) {
     if (msg) {
       *msg = please_upgrade_string;
     }
@@ -754,6 +754,7 @@ dirserv_add_descriptor(routerinfo_t *ri, const char **msg, const char *source)
       ri->cache_info.annotations_len;
   const int key_pinning = dirauth_get_options()->AuthDirPinKeys;
   *msg = NULL;
+  const or_options_t *options = get_options();
 
   /* If it's too big, refuse it now. Otherwise we'll cache it all over the
    * network and it'll clog everything up. */
@@ -770,6 +771,16 @@ dirserv_add_descriptor(routerinfo_t *ri, const char **msg, const char *source)
 
   log_info(LD_DIR, "Assessing new descriptor: %s: %s",
            ri->nickname, ri->platform);
+
+  /* Until 0.4.8 is gone, TAP keys are still required. */
+  if (options->AuthDirSupport048Clients && !ri->tap_onion_pkey) {
+    log_info(LD_DIRSERV, "Rejecting descriptor from %s (source: %s); "
+             "it has no TAP key.",
+             router_describe(ri), source);
+    *msg = "Missing TAP key in descriptor.";
+    r = ROUTER_AUTHDIR_REJECTS;
+    goto fail;
+  }
 
   /* Check whether this descriptor is semantically identical to the last one
    * from this server.  (We do this here and not in router_add_to_routerlist

@@ -1,8 +1,9 @@
 Tests: download-release-file
 Depends: tor, netcat-openbsd, torsocks, curl, ca-certificates
+Restrictions: skippable, needs-internet
 # we need network
 # Restrictions: isolation-container
 
 Tests: setup-onion-service
-Depends: tor, netcat-openbsd, torsocks, curl, onionshare, colorized-logs, unzip, diffutils
-Restrictions: flaky
+Depends: tor, netcat-openbsd, torsocks, curl, onionshare-cli, colorized-logs, diffutils
+Restrictions: flaky, skippable, needs-internet
